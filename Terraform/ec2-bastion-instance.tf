@@ -7,40 +7,21 @@ data "aws_ami" "amazon_linux" {
   owners = ["amazon"]
 }
 
-resource "aws_iam_role" "bastion" {
-  name               = "${local.prefix}-bastion"
-  assume_role_policy = file("./templates/ec2-instance/instance-profile-policy.json")
-
-  tags = local.common_tags
-}
-
-resource "aws_iam_role_policy_attachment" "bastion_attach_policy" {
-  role       = aws_iam_role.bastion.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-}
-
-resource "aws_iam_instance_profile" "bastion" {
-  name = "${local.prefix}-bastion-instance-profile"
-  role = aws_iam_role.bastion.name
-}
 
 resource "aws_instance" "bastion" {
-  ami                  = data.aws_ami.amazon_linux.id
-  instance_type        = "t2.micro"
-  user_data            = file("./templates/ec2-instance/user-data.sh")
-  iam_instance_profile = aws_iam_instance_profile.bastion.name
-  key_name             = var.bastion_key_name
-  subnet_id            = aws_subnet.sandbox_subnet_public_1.id
+  ami           = data.aws_ami.amazon_linux.id
+  instance_type = "t2.micro"
+  key_name      = var.bastion_key_name
+  subnet_id     = aws_subnet.sandbox_subnet_public_1.id
 
   vpc_security_group_ids = [
-    aws_security_group.bastion.id
+    aws_security_group.bastion_sg.id
   ]
 
-  tags = merge(local.common_tags, tomap({ "Name" = "${local.prefix}-public-bastion" })
-  )
+  tags = merge(local.common_tags, tomap({ "Name" = "${local.prefix}-public-bastion" }))
 }
 
-resource "aws_security_group" "bastion" {
+resource "aws_security_group" "bastion_sg" {
   description = "Control bastion inbound and outbound access"
   name        = "${local.prefix}-bastion"
   vpc_id      = aws_vpc.sandbox_vpc.id
@@ -67,8 +48,8 @@ resource "aws_security_group" "bastion" {
   }
 
   egress {
-    from_port = 5432
-    to_port   = 5432
+    from_port = 22
+    to_port   = 22
     protocol  = "tcp"
     cidr_blocks = [
       aws_subnet.sandbox_subnet_private_1.cidr_block,
