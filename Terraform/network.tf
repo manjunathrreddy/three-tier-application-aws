@@ -47,7 +47,7 @@ resource "aws_eip" "public_eip_1" {
 }
 
 resource "aws_nat_gateway" "public_ng_1" {
-  depends_on = ["aws_internet_gateway.sandbox_igw"]
+  depends_on    = [aws_internet_gateway.sandbox_igw]
   allocation_id = aws_eip.public_eip_1.id
   subnet_id     = aws_subnet.sandbox_subnet_public_1.id
 
