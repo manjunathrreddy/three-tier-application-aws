@@ -15,16 +15,16 @@ variable "aws_region" {
   default = "us-east-1"
 }
 
-variable "bastion_key_name" {
+variable "access_key_name" {
   default = "terraform-key"
 }
 
-variable "redshift_dbuser" {
+variable "redshift_pgsql_user" {
   default = ""
 
 }
 
-variable "redshift_dbpassword" {
+variable "redshift_pgsql_password" {
   default = ""
 
 }
@@ -32,6 +32,18 @@ variable "redshift_dbpassword" {
 variable "redshift_maintenance_window" {
   default = ""
 
+}
+
+variable "webserver_instances" {
+  type = list(any)
+  default = [{
+    id          = 1,
+    tagged_name = "public-webserver-1",
+    server_type = "t2.micro",
+    web_subnet  = ""
+
+
+  }]
 }
 
 /*

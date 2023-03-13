@@ -1,7 +1,7 @@
 resource "aws_instance" "bastion" {
   ami           = data.aws_ami.amazon_linux.id
   instance_type = "t2.micro"
-  key_name      = var.bastion_key_name
+  key_name      = var.access_key_name
   subnet_id     = aws_subnet.sandbox_subnet_public_1.id
 
   vpc_security_group_ids = [
@@ -44,6 +44,9 @@ resource "aws_security_group" "bastion_sg" {
     cidr_blocks = [
       aws_subnet.sandbox_subnet_private_1.cidr_block,
       aws_subnet.sandbox_subnet_private_2.cidr_block,
+      aws_subnet.sandbox_subnet_public_1.cidr_block,
+      aws_subnet.sandbox_subnet_public_2.cidr_block,
+
     ]
   }
 
