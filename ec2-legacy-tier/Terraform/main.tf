@@ -35,11 +35,4 @@ locals {
   }
 }
 
-
-provider "aws" {
-  region = var.aws_region
-  //profile = "manjunathrreddy"
-}
-
-
 data "aws_region" "current" {}
