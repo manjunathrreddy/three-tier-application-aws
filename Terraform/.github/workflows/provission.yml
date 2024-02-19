@@ -1,0 +1,8 @@
+name: Provission AWS Resources with Terraform
+on: push
+jobs:
+  init:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Pull code from Repositories
+        uses: hashicorp/setup-terraform@v3
